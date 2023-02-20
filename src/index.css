@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .form-btn {
+        @apply;
+    }
+    .form-label {
+        @apply block text-white my-1 ml-0.5 font-semibold text-xs;
+    }
+    .form-input {
+        @apply bg-slate-400 placeholder-slate-300 rounded-sm outline-1 p-1 border-b-4 border-solid border-sky-400 focus:border-emerald-200 outline-none transition-all duration-300;
+    }
+}
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
