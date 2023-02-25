@@ -1,20 +1,12 @@
-import React from "react";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React from 'react';
+import Sidebar from './Sidebar';
+import Topbar from './Topbar';
+import { Formik } from 'formik';
 
 const LoginRegister = () => {
-    const handleLogin = (values) => {
-        const currentUser = {
-            id: Date.now(),
-            username: values.username,
-            password: values.password,
-        };
-        console.log(currentUser);
-    };
-
     return (
         <div className="flex content-center items-center justify-center w-screen h-screen bg-slate-300 z-0">
+<<<<<<< HEAD:client/src/components/LoginRegister.jsx
             
             {/* Login Form */}
             <div className="bg-slate-600 w-80 h-fit py-6 rounded-xl justify-center items-center flex flex-col">
@@ -61,9 +53,21 @@ const LoginRegister = () => {
                         </button>
                     </Form>
                 </Formik>
+=======
+            <div className="bg-slate-600 w-80 h-96 rounded-xl">
+               <form>
+                <h1>Login</h1>
+                <label for="username" >Username</label>
+                <input id="username" type="text" placeholder="Username"/>
+                <label for="password">Password</label>
+                <input id="password" type="text" placeholder="password"/>
+                <button>Login</button>
+                <button>Register</button>
+               </form>
+>>>>>>> parent of 428de3f (style: login form):src/components/LoginRegister.jsx
             </div>
         </div>
     );
-};
+}
 
 export default LoginRegister;
