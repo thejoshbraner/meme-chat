@@ -4,8 +4,8 @@ import LoginRegister from "./components/LoginRegister";
 
 function App() {
     return (
-        // <LoginRegister/>
-        <MainWindow />
+        <LoginRegister />
+        // <MainWindow />
     );
 }
 
