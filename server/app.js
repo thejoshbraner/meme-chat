@@ -5,13 +5,26 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const config = require("./config");
+const io = require("socket.io")(3000, {
+    cors: {
+        origin: ["http://127.0.0.1:5173"],
+    },
+});
 
-const connect = mongoose.connect(config.mongoUrl);
+io.on("connection", (socket) => {
+    console.log(socket.id);
+    socket.on("newMessage", (msg) => {
+        console.log(msg);
+        socket.broadcast.emit("sendMessage", { msg: msg, local: false });
+    });
+});
 
-connect.then(
-    () => console.log("Connected"),
-    (err) => console.log(err)
-);
+// const connect = mongoose.connect(config.mongoUrl);
+
+// connect.then(
+//     () => console.log("Connected"),
+//     (err) => console.log(err)
+// );
 
 const app = express();
 
@@ -26,9 +39,9 @@ app.use(express.urlencoded({ extended: false }));
 //Routes
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/api", (req, res) => {
-    res.json({ message: "Hello!" });
-});
+// app.get("/api", (req, res) => {
+//     res.json({ message: "Hello!" });
+// });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
