@@ -8,21 +8,26 @@ const ChatBox = () => {
     let inputRef = useRef("");
     const [log, setLog] = useState([]);
 
+    //prevents refresh, grabs input text and creates object using it marking it with a local flag set to true, then adds to log array
     const handleSubmit = (event) => {
         event.preventDefault();
         const msgObject = { msg: inputRef.current.value, local: true };
         console.log(msgObject);
         setLog([...log, msgObject]);
 
+        //posts input text from object to server then clears the input element
         socket.emit("newMessage", msgObject.msg);
         inputRef.current.value = "";
     };
 
+    //receives new message object from server, marked with a local flag set to false, then adds to log array
+    //...could probably build object here instead of on the server side? not sure which would be better yet
     socket.on("sendMessage", (msg) => {
         setLog([...log, msg]);
         console.log(msg);
     });
 
+    //Chatbox UI
     return (
         <div className="relative flex flex-col justify-end items-center bg-slate-600 w-3/4 h-3/4 rounded-l">
             {log.map((mess) => {
