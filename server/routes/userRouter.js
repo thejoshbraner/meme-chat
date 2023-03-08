@@ -9,7 +9,7 @@ userRouter.route("/").get((req, res, next) => {
     User.find()
         .then((users) => {
             res.statusCode = 200;
-            res.setHeader = ("Content-Type", "application/json");
+            res.setHeader("Content-Type", "application/json");
             res.json(users);
         })
         .catch((err) => next(err));
@@ -22,6 +22,9 @@ userRouter.post("/register", (req, res) => {
             res.setHeader("Content-Type", "application/json");
             res.json({ err: err });
         } else {
+            if (req.body.email) {
+                user.email = req.body.email;
+            }
             user.save((err) => {
                 if (err) {
                     res.statusCode = 500;
@@ -36,10 +39,23 @@ userRouter.post("/register", (req, res) => {
                         success: true,
                         status: "Registration Successful!",
                     });
+                    res.send(console.log("Success"));
                 });
             });
         }
     });
+});
+
+userRouter.post("/login", passport.authenticate("local"), (req, res) => {
+    const token = authenticate.getToken({ _id: req.user._id });
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        success: true,
+        token: token,
+        status: "You are successfully logged in!",
+    });
+    res.send(console.log("Success"));
 });
 
 module.exports = userRouter;

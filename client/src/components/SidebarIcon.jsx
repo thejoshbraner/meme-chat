@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const SidebarIcon = (props) => {
     return (
@@ -6,6 +6,6 @@ const SidebarIcon = (props) => {
             {props.text}
         </div>
     );
-}
+};
 
 export default SidebarIcon;

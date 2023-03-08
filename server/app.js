@@ -44,14 +44,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(passport.initialize());
 //Routes
-app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello!" });
 });
 
-app.use(passport.initialize());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
