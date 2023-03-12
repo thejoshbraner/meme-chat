@@ -15,10 +15,17 @@ exports.getToken = (user) => {
     return jwt.sign(user, config.secretKey, { expiresIn: 3600 });
 };
 
-const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: config.secretKey,
-};
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromExtractors([
+    (req) => {
+        let token = null;
+        if (req && req.cookies) {
+            token = req.cookies["token"];
+        }
+        return token;
+    },
+]);
+opts.secretOrKey = config.secretKey;
 
 exports.jwtPassport = passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {

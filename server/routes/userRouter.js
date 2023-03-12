@@ -5,7 +5,7 @@ const passport = require("passport");
 
 const userRouter = express.Router();
 
-userRouter.route("/").get((req, res, next) => {
+userRouter.route("/").get(authenticate.verifyUser, (req, res, next) => {
     User.find()
         .then((users) => {
             res.statusCode = 200;
@@ -46,16 +46,22 @@ userRouter.post("/register", (req, res) => {
     });
 });
 
-userRouter.post("/login", passport.authenticate("local"), (req, res) => {
+userRouter.post("/login", passport.authenticate("local", { session: false }), (req, res) => {
     const token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
+    res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+    });
     res.json({
         success: true,
         token: token,
         status: "You are successfully logged in!",
+        user: {
+            username: req.user.username,
+        },
     });
-    res.send(console.log("Success"));
 });
 
 module.exports = userRouter;

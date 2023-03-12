@@ -11,7 +11,7 @@ const io = require("socket.io")(3000, {
         origin: ["http://127.0.0.1:5173"],
     },
 });
-
+const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
 const userRouter = require("./routes/userRouter");
 
@@ -45,6 +45,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
+
+app.use(cookieParser());
 //Routes
 
 app.get("/", (req, res) => {
