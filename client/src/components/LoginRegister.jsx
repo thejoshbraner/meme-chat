@@ -3,11 +3,9 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Formik, Field, Form } from "formik";
 import Cookies from "js-cookie";
-import UserContext from "../utils/UserContext";
 
 export const Login = () => {
     // LOGIN
-    const userContext = useContext(UserContext);
 
     const handleLogin = async (values) => {
         try {
@@ -19,14 +17,13 @@ export const Login = () => {
             });
             const data = await response.json();
             console.log(data);
-
+            //Get the JWT from the request and set the cookie in the browser
             const token = data.token;
             Cookies.set("token", token, { path: "/" });
-
+            //Get the username from the request and save it to localStorage to be used elsewhere in the app
             const username = data.user.username;
             console.log(username);
-
-            userContext.setUserData({ username });
+            localStorage.setItem("username", username);
         } catch (error) {
             console.error(error);
         }

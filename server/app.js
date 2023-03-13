@@ -20,9 +20,9 @@ io.on("connection", (socket) => {
     console.log(socket.id);
     //Receives message from client
     socket.on("newMessage", (msg) => {
-        console.log(msg);
+        console.log(`${msg.username}, ${msg.msg}`);
         //Broadcasts message object with local false flag back to all clients except for sender, sender gets it locally
-        socket.broadcast.emit("sendMessage", { msg: msg, local: false });
+        socket.broadcast.emit("sendMessage", { username: msg.username, msg: msg.msg, local: false });
     });
 });
 

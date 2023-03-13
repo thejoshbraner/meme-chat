@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useRef } from "react";
 import { io } from "socket.io-client";
+import UserContext from "../utils/UserContext";
 
 const socket = io("http://localhost:3000");
 
 const ChatBox = () => {
+    const userContext = useContext(UserContext);
     let inputRef = useRef("");
     const [log, setLog] = useState([]);
 
     //prevents refresh, grabs input text and creates object using it marking it with a local flag set to true, then adds to log array
     const handleSubmit = (event) => {
         event.preventDefault();
-        const msgObject = { msg: inputRef.current.value, local: true };
+        const msgObject = { username: localStorage.username, msg: inputRef.current.value, local: true };
         console.log(msgObject);
         setLog([...log, msgObject]);
 
         //posts input text from object to server then clears the input element
-        socket.emit("newMessage", msgObject.msg);
+        socket.emit("newMessage", msgObject);
         inputRef.current.value = "";
     };
 
@@ -35,14 +37,14 @@ const ChatBox = () => {
                     //other user text bubble
                     return (
                         <div className="h-10 mb-1 ml-2 bg-slate-500 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-start">
-                            {mess.msg}
+                            {mess.username}: {mess.msg}
                         </div>
                     );
                 } else {
                     //self text bubble
                     return (
                         <div className="h-10 mb-1 mr-2 bg-slate-400 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-end">
-                            {mess.msg}
+                            {localStorage.username}: {mess.msg}
                         </div>
                     );
                 }
