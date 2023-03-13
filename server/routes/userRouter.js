@@ -64,4 +64,15 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
     });
 });
 
+userRouter.route("/checkAuth").get(authenticate.verifyUser, (req, res, next) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+        status: "You are logged in",
+        user: {
+            username: req.user.username,
+        },
+    });
+});
+
 module.exports = userRouter;
