@@ -14,15 +14,31 @@ const io = require("socket.io")(3000, {
 const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
 const userRouter = require("./routes/userRouter");
+const Chat = require("./models/chat");
 
 //Creates a new websocket and assigns ID to the client
 io.on("connection", (socket) => {
     console.log(socket.id);
+
     //Receives message from client
-    socket.on("newMessage", (msg) => {
-        console.log(`${msg.username}, ${msg.msg}`);
+    socket.on("newMessage", (data) => {
+        console.log(`${data.username}, ${data.msg}`);
+
+        const newChatMessage = new Chat({
+            username: data.username,
+            message: data.msg,
+        });
+
+        newChatMessage.save((err, savedMessage) => {
+            if (err) {
+                console.error(error);
+            } else {
+                console.log(`Messaved saved with ID: ${savedMessage._id}`);
+                io.emit("sendMessage", savedMessage);
+            }
+        });
+
         //Broadcasts message object with local false flag back to all clients except for sender, sender gets it locally
-        socket.broadcast.emit("sendMessage", { username: msg.username, msg: msg.msg, local: false });
     });
 });
 

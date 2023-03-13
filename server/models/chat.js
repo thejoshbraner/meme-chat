@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
 const Schema = mongoose.Schema;
 
 const chatSchema = new Schema({
@@ -16,7 +15,5 @@ const chatSchema = new Schema({
         default: Date.now,
     },
 });
-
-userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("Chat", chatSchema);
