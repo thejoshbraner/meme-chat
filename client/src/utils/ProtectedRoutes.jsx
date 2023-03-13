@@ -1,46 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router-dom";
 import { Login } from "../components/LoginRegister";
 import Cookies from "js-cookie";
 
-const useAuth = async () => {
-    const jwt = Cookies.get("jwt");
-    if (jwt) {
-        try {
-            const response = await fetch("/api/users/checkAuth", {
-                method: "GET",
-                headers: { Authorization: `Bearer ${jwt}` },
-            });
+const useAuth = () => {
+    const timestamp = new Date().getTime();
+    return fetch(`/api/users/checkAuth?${timestamp}`, {
+        method: "GET",
+    })
+        .then((response) => {
             if (response.status === 401) {
                 throw new Error("Unauthorized");
             }
-            const data = await response.json;
-            if (response.success) {
-                console.log(JSON.stringify(data));
+            return response.json();
+        })
+        .then((data) => {
+            if (data.success) {
+                console.log(data);
                 return true;
             } else {
                 return false;
             }
-        } catch (error) {
-            console.error(error);
+        })
+        .catch((error) => {
+            console.log(error);
             return false;
-        }
-    } else {
-        return false;
-    }
+        });
 };
 
 const ProtectedRoutes = () => {
-    const [isAuth, setIsAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState(null);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            const auth = await useAuth();
+        useAuth().then((auth) => {
             setIsAuth(auth);
-        };
-        checkAuth();
+        });
     }, []);
-    return isAuth ? <Outlet /> : <Login />;
+
+    if (isAuth === null) {
+        return <div>Loading...</div>;
+    }
+
+    return isAuth ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;

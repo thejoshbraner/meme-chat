@@ -52,8 +52,10 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
     res.setHeader("Content-Type", "application/json");
     res.cookie("token", token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: false,
+        maxAge: 360000,
     });
+
     res.json({
         success: true,
         token: token,
@@ -64,10 +66,11 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
     });
 });
 
-userRouter.route("/checkAuth").get(authenticate.verifyUser, (req, res, next) => {
+userRouter.get("/checkAuth", authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.json({
+        success: true,
         status: "You are logged in",
         user: {
             username: req.user.username,

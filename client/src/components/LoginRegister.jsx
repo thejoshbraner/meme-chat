@@ -1,18 +1,35 @@
-import React from "react";
+import React, { useContext } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Formik, Field, Form } from "formik";
+import Cookies from "js-cookie";
+import UserContext from "../utils/UserContext";
 
 export const Login = () => {
     // LOGIN
+    const userContext = useContext(UserContext);
 
     const handleLogin = async (values) => {
-        console.log(values);
-        const response = await fetch("/api/users/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
-        });
+        try {
+            console.log(JSON.stringify(values));
+            const response = await fetch("/api/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
+            });
+            const data = await response.json();
+            console.log(data);
+
+            const token = data.token;
+            Cookies.set("token", token, { path: "/" });
+
+            const username = data.user.username;
+            console.log(username);
+
+            userContext.setUserData({ username });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -26,7 +43,7 @@ export const Login = () => {
                     }}
                     onSubmit={handleLogin}
                 >
-                    <form className="w-10/12 flex flex-col">
+                    <Form className="w-10/12 flex flex-col">
                         <label className="form-label" htmlFor="Username">
                             Username
                         </label>
@@ -56,7 +73,7 @@ export const Login = () => {
                         <button className="rounded-sm text-sm font-semibold block bg-sky-700 text-white mt-2 py-1 hover:bg-sky-600 transition-all duration-300">
                             Register
                         </button>
-                    </form>
+                    </Form>
                 </Formik>
             </div>
         </div>
