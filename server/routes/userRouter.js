@@ -37,9 +37,8 @@ userRouter.post("/register", (req, res) => {
                     res.setHeader("Content-Type", "application/json");
                     res.json({
                         success: true,
-                        status: "Registration Successful!",
+                        status: "Registration successful!",
                     });
-                    res.send(console.log("Success"));
                 });
             });
         }
@@ -55,7 +54,6 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
         sameSite: false,
         maxAge: 26 * 60 * 60 * 1000,
     });
-
     res.json({
         success: true,
         token: token,
@@ -63,6 +61,18 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
         user: {
             username: req.user.username,
         },
+    });
+});
+
+userRouter.get("/logout", (req, res, next) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.cookie("token", "", {
+        expires: new Date(0),
+    });
+    res.json({
+        success: true,
+        status: "You are successfully logged out!",
     });
 });
 

@@ -31,9 +31,9 @@ io.on("connection", (socket) => {
 
         newChatMessage.save((err, savedMessage) => {
             if (err) {
-                console.error(error);
+                console.error(err);
             } else {
-                console.log(`Messaved saved with ID: ${savedMessage._id}`);
+                console.log(`Message saved with ID: ${savedMessage._id}`);
                 io.emit("sendMessage", savedMessage);
             }
         });

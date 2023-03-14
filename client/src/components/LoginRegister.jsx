@@ -3,9 +3,11 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Formik, Field, Form } from "formik";
 import Cookies from "js-cookie";
+import { useNavigate, Navigate } from "react-router-dom";
 
 export const Login = () => {
     // LOGIN
+    const navigate = useNavigate();
 
     const handleLogin = async (values) => {
         try {
@@ -24,6 +26,8 @@ export const Login = () => {
             const username = data.user.username;
             console.log(username);
             localStorage.setItem("username", username);
+            //Navigate to the chat
+            navigate("/");
         } catch (error) {
             console.error(error);
         }
@@ -58,16 +62,13 @@ export const Login = () => {
                             id="password"
                             placeholder="Password"
                             name="password"
-                            type="text"
+                            type="password"
                             className="form-input"
                         />
-                        <button
-                            className="rounded-sm text-sm font-semibold block bg-sky-400 text-white mt-5 py-1 hover:bg-sky-300 transition-all duration-300"
-                            type="submit"
-                        >
+                        <button className="btn-primary" type="submit">
                             Login
                         </button>
-                        <button className="rounded-sm text-sm font-semibold block bg-sky-700 text-white mt-2 py-1 hover:bg-sky-600 transition-all duration-300">
+                        <button type="button" onClick={() => navigate("/register")} className="btn-secondary">
                             Register
                         </button>
                     </Form>
@@ -79,7 +80,7 @@ export const Login = () => {
 
 export const Register = () => {
     //REGISTER
-
+    const navigate = useNavigate();
     const handleRegister = async (values) => {
         console.log(values);
         const response = await fetch("/api/users/register", {
@@ -87,12 +88,16 @@ export const Register = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         });
-        // const body = await response.json();
-        // console.log(body);
+        const data = await response.json();
+        if (data.success) {
+            navigate("/login");
+        } else {
+            console.log("something went wrong");
+        }
     };
     return (
         <div className="flex content-center items-center justify-center w-screen h-screen bg-slate-300 z-0">
-            {/* Login Form */}
+            {/* Registration Form */}
             <div className="bg-slate-600 w-80 h-fit py-6 rounded-xl justify-center items-center flex flex-col">
                 <h1 className="text-lg font-bold block text-white mb-5">REGISTER</h1>
                 <Formik
@@ -122,21 +127,18 @@ export const Register = () => {
                             id="password"
                             placeholder="Password"
                             name="password"
-                            type="text"
+                            type="password"
                             className="form-input"
                         />
                         <label className="form-label" htmlFor="Email">
                             Email
                         </label>
-                        <Field id="email" placeholder="Email" name="email" type="text" className="form-input" />
-                        <button className="rounded-sm text-sm font-semibold block bg-sky-400 text-white mt-5 py-1 hover:bg-sky-300 transition-all duration-300">
-                            Login
-                        </button>
-                        <button
-                            type="submit"
-                            className="rounded-sm text-sm font-semibold block bg-sky-700 text-white mt-2 py-1 hover:bg-sky-600 transition-all duration-300"
-                        >
+                        <Field id="email" placeholder="Email" name="email" type="email" className="form-input" />
+                        <button type="submit" className="btn-primary">
                             Register
+                        </button>
+                        <button type="button" onClick={() => navigate("/login")} className="btn-secondary">
+                            Login
                         </button>
                     </Form>
                 </Formik>

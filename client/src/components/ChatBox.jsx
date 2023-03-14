@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
 import UserContext from "../utils/UserContext";
+import Topbar from "./Topbar";
 
 const socket = io("http://localhost:3000");
 
@@ -22,13 +23,6 @@ const ChatBox = () => {
         inputRef.current.value = "";
     };
 
-    //receives new message object from server, marked with a local flag set to false, then adds to log array
-    //...could probably build object here instead of on the server side? not sure which would be better yet
-    // socket.on("sendMessage", (data) => {
-    //     setLog([...log, data]);
-    //     console.log(data);
-    // });
-
     const handleNewMessage = (data) => {
         setLog([...log, data]);
         console.log(data);
@@ -42,6 +36,12 @@ const ChatBox = () => {
         const data = await response.json();
         console.log(data);
         return data;
+    };
+
+    const submitTextArea = (event) => {
+        if (event.keyCode === 13) {
+            handleSubmit(event);
+        }
     };
 
     useEffect(() => {
@@ -60,39 +60,46 @@ const ChatBox = () => {
 
     //Chatbox UI
     return (
-        <div className="relative flex flex-col justify-end items-center bg-slate-600 w-3/4 h-3/4 rounded-l">
-            {log.map((mess) => {
-                if (mess.username !== username) {
-                    //other user text bubble
-                    return (
-                        <div className="h-10 mb-1 ml-2 bg-slate-500 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-start">
-                            {mess.username}: {mess.message}
-                        </div>
-                    );
-                } else {
-                    //self text bubble
-                    return (
-                        <div className="h-10 mb-1 mr-2 bg-slate-400 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-end">
-                            {mess.username}: {mess.message}
-                        </div>
-                    );
-                }
-            })}
-            {/* CHAT INPUT & SEND */}
-            <div className="flex flex-row mb-4 bg-slate-500 border-2 border-solid border-slate-600 rounded-l w-98%">
-                <form className="flex w-full" onSubmit={handleSubmit}>
-                    <input
-                        autoFocus={true}
-                        name="message"
-                        className="rounded-l h-20 w-full pl-6 outline-none placeholder-slate-400 bg-slate-500 text-slate-200"
-                        type="text"
-                        placeholder="write something"
-                        ref={inputRef}
-                    />
-                    <button type="submit" className="pr-6 text-slate-400">
-                        SEND
-                    </button>
-                </form>
+        <div className="w-3/4 h-3/4 flex ">
+            <Topbar />
+            <div className="relative p-2 flex overflow-hidden flex-col justify-end items-center bg-slate-600 w-full h-full rounded-lg">
+                {log.map((mess) => {
+                    if (mess.username !== username) {
+                        //other user text bubble
+                        return (
+                            <div className="min-h-content mb-1 break-words bg-slate-500 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-start">
+                                <span className="text-slate-300 pr-3 font-bold">{mess.username}:</span>
+                                {mess.message}
+                            </div>
+                        );
+                    } else {
+                        //self text bubble
+                        return (
+                            <div className="min-h-content p-2 mb-1 break-words bg-slate-400 border-2 border-solid border-slate-600 rounded-l text-white px-2 flex items-center self-end">
+                                <span className="text-slate-300 font-bold">{mess.username}:</span>&nbsp;
+                                {mess.message}
+                            </div>
+                        );
+                    }
+                })}
+                {/* CHAT INPUT & SEND */}
+                <div className="flex flex-row h-20 bg-slate-500 border-2 border-solid border-slate-600 rounded-l w-full">
+                    <form className="flex w-full h-20 items-center" onSubmit={handleSubmit}>
+                        <textarea
+                            rows=""
+                            autoFocus={true}
+                            name="message"
+                            className="rounded-l scrollbar-thin scrollbar-thumb-slate-600 scrollbar-thumb-rounded-lg resize-none w-full h-content pt-3 pl-6 outline-none placeholder-slate-400 bg-slate-500 text-slate-200"
+                            type="text"
+                            placeholder="write something"
+                            ref={inputRef}
+                            onKeyDown={submitTextArea}
+                        />
+                        <button type="submit" className="pr-6 pl-2 text-slate-400">
+                            SEND
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );

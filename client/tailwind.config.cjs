@@ -5,5 +5,5 @@ module.exports = {
     theme: {
         extend: {},
     },
-    plugins: [percentageWidth],
+    plugins: [percentageWidth, require("tailwind-scrollbar")({ nocompatible: true })],
 };
