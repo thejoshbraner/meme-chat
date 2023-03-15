@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
 import { Formik, Field, Form } from "formik";
 import Cookies from "js-cookie";
 import { useNavigate, Navigate } from "react-router-dom";
 
-export const Login = () => {
+export const Login = (props) => {
     // LOGIN
     const navigate = useNavigate();
 
@@ -27,6 +25,7 @@ export const Login = () => {
             console.log(username);
             localStorage.setItem("username", username);
             //Navigate to the chat
+            props.loginSuccessToast();
             navigate("/");
         } catch (error) {
             console.error(error);
