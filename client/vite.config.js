@@ -8,5 +8,14 @@ export default defineConfig({
             "/api": "http://localhost:3001",
         },
     },
+
     plugins: [react()],
+    server: {
+        middlewareMode: true,
+        watch: {
+            exclude: [
+                "**/*.html", // skip parsing for HTML files
+            ],
+        },
+    },
 });

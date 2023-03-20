@@ -8,9 +8,11 @@ const config = require("./config");
 const cors = require("cors");
 const io = require("socket.io")(3000, {
     cors: {
-        origin: ["http://127.0.0.1:5173"],
+        origin: ["http://localhost:3001"],
     },
 });
+const bodyParser = require("body-parser");
+
 const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
 const userRouter = require("./routes/userRouter");
@@ -49,9 +51,11 @@ connect.then(() => console.log("Connected to the database!")).catch((err) => con
 const app = express();
 app.use(
     cors({
-        origin: "http://127.0.0.1:5173",
+        origin: "http://localhost:3001",
     })
 );
+app.use(bodyParser.json());
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
@@ -60,20 +64,25 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+//Passport
 app.use(passport.initialize());
-
 app.use(cookieParser());
+
 //Routes
+// app.get("*.js", function (req, res, next) {
+//     res.setHeader("Content-Type", "application/javascript");
+//     next();
+// });
 
-app.get("/", (req, res) => {
-    res.json({ message: "Hello!" });
-});
-
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
 
+//Let React app handle internal routing
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
