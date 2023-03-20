@@ -17,6 +17,7 @@ const chatRouter = require("./routes/chatRouter");
 const userRouter = require("./routes/userRouter");
 const Chat = require("./models/chat");
 require("dotenv").config();
+const sslRedirect = require("express-sslify");
 
 //Creates a new websocket and assigns ID to the client
 io.on("connection", (socket) => {
@@ -56,16 +57,16 @@ app.use(
         credentials: true,
     })
 );
+app.use(sslRedirect.HTTPS({ trustProtoHeader: true }));
 
 app.use(bodyParser.json());
-app.all("*", (req, res, next) => {
-    if (req.secure) {
-        return next();
-    } else {
-        console.log(`Redirecting to: https://${req.hostname}:${app.get("secPort")}${req.url}`);
-        res.redirect(301, `Redirecting to: https://${req.hostname}:${app.get("secPort")}${req.url}`);
+app.use((req, res, next) => {
+    if (req.headers["x-forwarded-proto"] !== "https" && process.env.NODE_ENV === "production") {
+        return res.redirect("https://" + req.headers.host + req.url);
     }
+    return next();
 });
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
