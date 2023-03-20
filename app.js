@@ -85,7 +85,7 @@ app.use(cookieParser());
 //     next();
 // });
 
-app.use(express.static(path.join(__dirname, "./client/dist")));
+app.use(express.static(path.join(__dirname, "client", "dist")));
 
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
