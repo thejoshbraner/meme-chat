@@ -4,19 +4,19 @@ const path = require("path");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const config = require("./config");
 const cors = require("cors");
 const io = require("socket.io")(3000, {
     cors: {
-        origin: ["http://localhost:3001"],
+        origin: `https://localhost:${process.env.PORT || 3444}`,
+        credentials: true,
     },
 });
 const bodyParser = require("body-parser");
-
 const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
 const userRouter = require("./routes/userRouter");
 const Chat = require("./models/chat");
+require("dotenv").config();
 
 //Creates a new websocket and assigns ID to the client
 io.on("connection", (socket) => {
@@ -44,18 +44,28 @@ io.on("connection", (socket) => {
     });
 });
 
-const connect = mongoose.connect(config.mongoUrl);
+const connect = mongoose.connect(process.env.MONGO_ATLAS_URL);
 
 connect.then(() => console.log("Connected to the database!")).catch((err) => console.log(err));
 
 const app = express();
+
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: `https://localhost:${process.env.PORT || 3444}`,
+        credentials: true,
     })
 );
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
+app.all("*", (req, res, next) => {
+    if (req.secure) {
+        return next();
+    } else {
+        console.log(`Redirecting to: https://${req.hostname}:${app.get("secPort")}${req.url}`);
+        res.redirect(301, `Redirecting to: https://${req.hostname}:${app.get("secPort")}${req.url}`);
+    }
+});
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");

@@ -52,7 +52,7 @@ userRouter.post("/login", passport.authenticate("local", { session: false }), (r
     res.cookie("token", token, {
         httpOnly: true,
         sameSite: false,
-        maxAge: 26 * 60 * 60 * 1000,
+        maxAge: 60 * 60 * 1000,
     });
     res.json({
         success: true,
