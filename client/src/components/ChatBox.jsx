@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import UserContext from "../utils/UserContext";
 import Topbar from "./Topbar";
 import { OtherBubble, SelfBubble } from "./ChatBubbles";
-const socket = io("http://localhost:3000");
+const socket = io("https://just-another-chat-app.herokuapp.com/:3000");
 
 const ChatBox = () => {
     const username = localStorage.username;
