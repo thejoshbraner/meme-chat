@@ -84,14 +84,14 @@ app.use(cookieParser());
 //     next();
 // });
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
+app.use(express.static(path.join(__dirname, "./client/dist")));
 
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
 
 //Let React app handle internal routing
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+    res.sendFile(path.join(__dirname, "./client/dist/index.html"));
 });
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
