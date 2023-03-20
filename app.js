@@ -5,12 +5,16 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const cors = require("cors");
-const io = require("socket.io")(3000, {
-    cors: {
-        origin: `https://localhost:${process.env.PORT || 3444}`,
-        credentials: true,
-    },
-});
+const https = require("https");
+const app = express();
+const httpsServer = https.createServer(app);
+const io = require("socket.io")(httpsServer);
+// (3000, {
+//     cors: {
+//         origin: `https://localhost:${process.env.PORT || 3444}`,
+//         credentials: true,
+//     },
+// });
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
@@ -45,11 +49,13 @@ io.on("connection", (socket) => {
     });
 });
 
+httpsServer.listen(process.env.SOCKET_PORT || 3000, () => {
+    console.log(`Socket.io server listening on ${process.env.SOCKET_PORT || 3000}`);
+});
+
 const connect = mongoose.connect(process.env.MONGO_ATLAS_URL);
 
 connect.then(() => console.log("Connected to the database!")).catch((err) => console.log(err));
-
-const app = express();
 
 app.use(
     cors({
