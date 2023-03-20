@@ -66,12 +66,6 @@ app.use(
 app.use(sslRedirect.HTTPS({ trustProtoHeader: true }));
 
 app.use(bodyParser.json());
-app.use((req, res, next) => {
-    if (req.headers["x-forwarded-proto"] !== "https" && process.env.NODE_ENV === "production") {
-        return res.redirect("https://" + req.headers.host + req.url);
-    }
-    return next();
-});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -95,7 +89,12 @@ app.use(express.static(path.join(__dirname, "client", "dist")));
 
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
-
+app.use((req, res, next) => {
+    if (req.headers["x-forwarded-proto"] !== "https" && process.env.NODE_ENV === "production") {
+        return res.redirect("https://" + req.headers.host + req.url);
+    }
+    return next();
+});
 //Let React app handle internal routing
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "./client/dist/index.html"));
