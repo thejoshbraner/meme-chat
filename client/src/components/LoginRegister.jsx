@@ -12,7 +12,7 @@ export const Login = (props) => {
             const response = await fetch("/api/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: values.username.toLowercase(), password: values.password }),
+                body: JSON.stringify({ username: values.username.toLowerCase(), password: values.password }),
             });
             const data = await response.json();
             if (!data.success) {
