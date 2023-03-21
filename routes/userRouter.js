@@ -46,6 +46,13 @@ userRouter.post("/register", (req, res) => {
 });
 
 userRouter.post("/login", passport.authenticate("local", { session: false }), (req, res) => {
+    if (err || !user) {
+        console.log("Login failed");
+        res.statusCode = 401;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ success: false });
+        return;
+    }
     const token = authenticate.getToken({ _id: req.user._id });
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
