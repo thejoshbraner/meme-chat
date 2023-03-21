@@ -50,20 +50,20 @@ io.on("connection", (socket) => {
     });
 });
 
-httpsServer.listen(process.env.SOCKET_PORT || 3000, () => {
-    console.log(`Socket.io server listening on ${process.env.SOCKET_PORT || 3000}`);
+httpsServer.listen(process.env.SOCKET_PORT, () => {
+    console.log(`Socket.io server listening on ${process.env.SOCKET_PORT}`);
 });
 
 const connect = mongoose.connect(process.env.MONGO_ATLAS_URL);
 
 connect.then(() => console.log("Connected to the database!")).catch((err) => console.log(err));
 
-app.use(
-    cors({
-        origin: `https://localhost:${process.env.PORT || 3444}`,
-        credentials: true,
-    })
-);
+// app.use(
+//     cors({
+//         origin: `https://localhost:${process.env.PORT || 3444}`,
+//         credentials: true,
+//     })
+// );
 app.use(sslRedirect.HTTPS({ trustProtoHeader: true }));
 
 app.use(bodyParser.json());
