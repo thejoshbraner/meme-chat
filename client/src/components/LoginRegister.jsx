@@ -9,31 +9,34 @@ export const Login = (props) => {
 
     const handleLogin = async (values) => {
         try {
-            console.log(JSON.stringify(values));
             const response = await fetch("/api/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),
             });
             const data = await response.json();
-            console.log(data);
-            //Get the JWT from the request and set the cookie in the browser
-            const token = data.token;
-            Cookies.set("token", token, { path: "/" });
-            //Get the username from the request and save it to localStorage to be used elsewhere in the app
-            const username = data.user.username;
-            console.log(username);
-            localStorage.setItem("username", username);
-            //Navigate to the chat
-            props.loginSuccessToast();
-            navigate("/");
+            if (!data.success) {
+                props.loginFailToast();
+            } else {
+                console.log(data);
+                //Get the JWT from the request and set the cookie in the browser
+                const token = data.token;
+                Cookies.set("token", token, { path: "/" });
+                //Get the username from the request and save it to localStorage to be used elsewhere in the app
+                const username = data.user.username;
+                console.log(username);
+                localStorage.setItem("username", username);
+                //Navigate to the chat
+                props.loginSuccessToast();
+                navigate("/");
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <div className="flex content-center items-center justify-center w-screen h-screen bg-slate-300 z-0">
+        <div className="flex content-center items-center justify-center w-screen h-full bg-slate-300 z-0">
             <div className="bg-slate-600 w-80 h-fit py-6 rounded-xl justify-center items-center flex flex-col">
                 <h1 className="text-lg font-bold block text-white mb-5">LOGIN</h1>
                 <Formik
@@ -81,7 +84,6 @@ export const Register = () => {
     //REGISTER
     const navigate = useNavigate();
     const handleRegister = async (values) => {
-        console.log(values);
         const response = await fetch("/api/users/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

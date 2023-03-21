@@ -60,9 +60,9 @@ const ChatBox = () => {
 
     //Chatbox UI
     return (
-        <div className="w-3/4 h-3/4 flex ">
+        <div className="w-full h-full md:w-3/4 md:h-3/4 flex ">
             <Topbar />
-            <div className="relative p-2 flex overflow-hidden flex-col justify-end items-center bg-slate-600 w-full h-full rounded-lg">
+            <div className="relative p-2 flex overflow-hidden flex-col justify-end items-center bg-slate-600 w-full h-full md:rounded-lg">
                 {log.map((mess) => {
                     if (mess.username !== username) {
                         //other user text bubble

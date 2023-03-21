@@ -10,9 +10,9 @@ import { ToastContainer, toast } from "react-toastify";
 function App() {
     const loginSuccessToast = () => {
         toast.success("Logged in!", {
-            position: "bottom-center",
-            autoClose: 5000,
-            hideProgressBar: false,
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
@@ -22,10 +22,10 @@ function App() {
     };
 
     const loginFailToast = () => {
-        toast.fail("Wrong info!", {
-            position: "bottom-center",
-            autoClose: 5000,
-            hideProgressBar: false,
+        toast.warn("Wrong info!", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,

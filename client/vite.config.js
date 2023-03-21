@@ -7,15 +7,13 @@ export default defineConfig({
         proxy: {
             "/api": "https://just-another-chat-app.herokuapp.com/",
         },
+        // middlewareMode: true,
+        // watch: {
+        //     exclude: [
+        //         "**/*.html", // skip parsing for HTML files
+        //     ],
+        // },
     },
 
     plugins: [react()],
-    server: {
-        middlewareMode: true,
-        watch: {
-            exclude: [
-                "**/*.html", // skip parsing for HTML files
-            ],
-        },
-    },
 });
