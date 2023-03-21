@@ -25,10 +25,11 @@ const sslRedirect = require("express-sslify");
 
 //Creates a new websocket and assigns ID to the client
 io.on("connection", (socket) => {
-    console.log(socket.id);
+    console.log(`connected with ${socket.id}`);
 
     //Receives message from client
     socket.on("newMessage", (data) => {
+        console.log("received newMessage");
         console.log(`${data.username}, ${data.msg}`);
 
         const newChatMessage = new Chat({
@@ -45,7 +46,7 @@ io.on("connection", (socket) => {
             }
         });
 
-        //Broadcasts message object with local false flag back to all clients except for sender, sender gets it locally
+        //Broadcasts message to all clients
     });
 });
 
