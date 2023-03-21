@@ -4,11 +4,11 @@
  * Module dependencies.
  */
 
-var app = require("../app");
-var debug = require("debug")("server:server");
-var http = require("http");
-const https = require("https");
-const fs = require("fs");
+const app = require("../app");
+const debug = require("debug")("server:server");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const Chat = require("../models/chat");
 
 /**
  * Get port from environment and store in Express.
@@ -16,22 +16,48 @@ const fs = require("fs");
 
 var port = normalizePort(process.env.PORT || "3001");
 app.set("port", port);
-app.set("secPort", port + 443);
 
-//Create HTTPS server
-const secureServer = https.createServer(app);
+//Create HTTPS server... that isn't needed when deploying to heroku, will remove later.
+// const secureServer = https.createServer(app);
 
-secureServer.listen(app.get("secPort"), () => {
-    console.log("server listening on port", app.get("secPort"));
-});
-secureServer.on("error", onError);
-secureServer.on("listening", onListening);
+// secureServer.listen(app.get("secPort"), () => {
+//     console.log("server listening on port", app.get("secPort"));
+// });
+// secureServer.on("error", onError);
+// secureServer.on("listening", onListening);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = createServer(app);
+const io = new Server(server);
+
+//Creates a new websocket and assigns ID to the client
+io.on("connection", (socket) => {
+    console.log(`connected with ${socket.id}`);
+
+    //Receives message from client
+    socket.on("newMessage", (data) => {
+        console.log("received newMessage");
+        console.log(`${data.username}, ${data.msg}`);
+
+        const newChatMessage = new Chat({
+            username: data.username,
+            message: data.msg,
+        });
+
+        newChatMessage.save((err, savedMessage) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log(`Message saved with ID: ${savedMessage._id}`);
+                io.emit("sendMessage", savedMessage);
+            }
+        });
+        //Broadcasts message to all clients
+    });
+});
 /**
  * Listen on provided port, on all network interfaces.
  */

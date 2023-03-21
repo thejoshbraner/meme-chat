@@ -7,14 +7,6 @@ const passport = require("passport");
 const cors = require("cors");
 const https = require("https");
 const app = express();
-const httpsServer = https.createServer(app);
-const io = require("socket.io")(httpsServer);
-// (3000, {
-//     cors: {
-//         origin: `https://localhost:${process.env.PORT || 3444}`,
-//         credentials: true,
-//     },
-// });
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const chatRouter = require("./routes/chatRouter");
@@ -23,36 +15,31 @@ const Chat = require("./models/chat");
 require("dotenv").config();
 const sslRedirect = require("express-sslify");
 
-//Creates a new websocket and assigns ID to the client
-io.on("connection", (socket) => {
-    console.log(`connected with ${socket.id}`);
+// //Creates a new websocket and assigns ID to the client
+// io.on("connection", (socket) => {
+//     console.log(`connected with ${socket.id}`);
 
-    //Receives message from client
-    socket.on("newMessage", (data) => {
-        console.log("received newMessage");
-        console.log(`${data.username}, ${data.msg}`);
+//     //Receives message from client
+//     socket.on("newMessage", (data) => {
+//         console.log("received newMessage");
+//         console.log(`${data.username}, ${data.msg}`);
 
-        const newChatMessage = new Chat({
-            username: data.username,
-            message: data.msg,
-        });
+//         const newChatMessage = new Chat({
+//             username: data.username,
+//             message: data.msg,
+//         });
 
-        newChatMessage.save((err, savedMessage) => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log(`Message saved with ID: ${savedMessage._id}`);
-                io.emit("sendMessage", savedMessage);
-            }
-        });
-
-        //Broadcasts message to all clients
-    });
-});
-
-httpsServer.listen(process.env.SOCKET_PORT, () => {
-    console.log(`Socket.io server listening on ${process.env.SOCKET_PORT}`);
-});
+//         newChatMessage.save((err, savedMessage) => {
+//             if (err) {
+//                 console.error(err);
+//             } else {
+//                 console.log(`Message saved with ID: ${savedMessage._id}`);
+//                 io.emit("sendMessage", savedMessage);
+//             }
+//         });
+//         //Broadcasts message to all clients
+//     });
+// });
 
 const connect = mongoose.connect(process.env.MONGO_ATLAS_URL);
 
