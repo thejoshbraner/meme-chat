@@ -14,6 +14,7 @@ export const Login = (props) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),
             });
+            console.log(response);
             if (response.status === 401) {
                 props.loginFailToast();
             } else {
