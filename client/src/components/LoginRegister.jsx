@@ -14,10 +14,10 @@ export const Login = (props) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),
             });
-            const data = await response.json();
-            if (!data.success) {
+            if (response.status === 401) {
                 props.loginFailToast();
             } else {
+                const data = await response.json();
                 console.log(data);
                 //Get the JWT from the request and set the cookie in the browser
                 const token = data.token;
